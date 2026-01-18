@@ -1,42 +1,51 @@
-This project is a clone of the classic chess game, built using JavaScript, EJS, Node.js, Express.js, Socket.io, and the Chess.js engine.
+Chess Game
+
+Live Demo: https://chess-game-608k.onrender.com
+
+Chess Game is a real-time multiplayer chess application that allows two players to compete live in the browser. Built using Node.js, Express.js, EJS, Socket.IO, and the Chess.js engine, the application ensures accurate move validation, synchronized gameplay, and a smooth user experience.
 
 Features
-Play chess against another player in real-time
-Real-time updates using Socket.io
-Move validation and game logic powered by Chess.js
-User-friendly interface designed with EJS templates
 
-Technologies Used
-JavaScript: For the core game logic and client-side scripting.
-Node.js: For the server-side runtime environment.
-Express.js: For handling server routing and middleware.
-EJS: For server-side templating.
-Socket.io: For real-time communication between players.
-Chess.js: For the chess game logic and move validation.
+Real-time multiplayer chess gameplay
 
-Installation and Setup
+Live move synchronization using Socket.IO
 
-1.Clone the repository:
-git clone https://github.com/your-username/chess-game-clone.git
-cd chess-game-clone
+Accurate move validation using Chess.js
 
-2.Install dependencies:
-npm install
+Automatic role assignment for players and spectators
 
-3.Create a .env file in the root directory if needed and add your environment variables:
-PORT=3000
+Server-side rendering using EJS templates
 
-4.Start the server:
-node app.js
+Deployed and accessible via cloud hosting
 
-Dependencies
-chess.js: ^1.0.0-beta.8
-ejs: ^3.1.10
-express: ^4.19.2
-socket.io: ^4.7.5
+Tech Stack
 
-Dev Dependencies
-tailwindcss: ^3.4.4
+Frontend:
 
-Author
-Ananya Kastiya
+EJS (Embedded JavaScript Templates)
+
+JavaScript (ES6+)
+
+HTML
+
+CSS
+
+Backend:
+
+Node.js
+
+Express.js
+
+Socket.IO
+
+Chess.js
+
+Project Structure
+
+views/ – EJS templates for UI rendering
+
+public/ – Static assets (CSS and JavaScript)
+
+app.js – Express server and Socket.IO logic
+
+package.json – Project dependencies and scripts

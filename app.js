@@ -18,7 +18,7 @@ app.set("view engine", "ejs");
 app.use(express.static(path.join(__dirname, "public")));
 
 app.get("/", (req, res) => {
-  res.render("index.ejs", { title: "Chess game" });
+  res.render("index", { title: "Chess game" });
 });
 
 io.on("connection", function (uniquesocket) {
@@ -37,7 +37,7 @@ io.on("connection", function (uniquesocket) {
   uniquesocket.on("disconnect", function () {
     if (uniquesocket.id === players.white) {
       delete players.white;
-    } else if (uniquesocket.id === players.blck) {
+    } else if (uniquesocket.id === players.black) {
       delete players.black;
     }
   });
@@ -63,6 +63,8 @@ io.on("connection", function (uniquesocket) {
   });
 });
 
-server.listen(3000, function () {
-  console.log("listening on port 3000");
+const PORT = process.env.PORT || 3000;
+
+server.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });

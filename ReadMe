@@ -1,51 +1,35 @@
-Chess Game
+# Chess Game
 
-Live Demo: https://chess-game-608k.onrender.com
+**Live Demo:** https://chess-game-608k.onrender.com
 
 Chess Game is a real-time multiplayer chess application that allows two players to compete live in the browser. Built using Node.js, Express.js, EJS, Socket.IO, and the Chess.js engine, the application ensures accurate move validation, synchronized gameplay, and a smooth user experience.
 
-Features
+## Features
 
-Real-time multiplayer chess gameplay
+- Real-time multiplayer chess gameplay
+- Live move synchronization using Socket.IO
+- Accurate move validation using Chess.js
+- Automatic role assignment for players and spectators
+- Server-side rendering using EJS templates
+- Deployed and accessible via cloud hosting
 
-Live move synchronization using Socket.IO
+## Tech Stack
 
-Accurate move validation using Chess.js
+**Frontend:**
+- EJS (Embedded JavaScript Templates)
+- JavaScript (ES6+)
+- HTML
+- CSS
 
-Automatic role assignment for players and spectators
+**Backend:**
+- Node.js
+- Express.js
+- Socket.IO
+- Chess.js
 
-Server-side rendering using EJS templates
+## Project Structure
 
-Deployed and accessible via cloud hosting
-
-Tech Stack
-
-Frontend:
-
-EJS (Embedded JavaScript Templates)
-
-JavaScript (ES6+)
-
-HTML
-
-CSS
-
-Backend:
-
-Node.js
-
-Express.js
-
-Socket.IO
-
-Chess.js
-
-Project Structure
-
-views/ – EJS templates for UI rendering
-
-public/ – Static assets (CSS and JavaScript)
-
-app.js – Express server and Socket.IO logic
-
-package.json – Project dependencies and scripts
+- `views/` – EJS templates for UI rendering  
+- `public/` – Static assets (CSS and JavaScript)  
+- `app.js` – Express server and Socket.IO logic  
+- `package.json` – Project dependencies and scripts  

@@ -47,7 +47,7 @@ app.get("/api/health", (req, res) => {
 });
 
 app.get("/", (req, res) => {
-  res.render("index", { title: "ChessLive - Real-Time Multiplayer Platform" });
+  res.render("index", { title: "ChessMate - Real-Time Multiplayer Platform" });
 });
 
 app.get("/game/:roomId", (req, res) => {

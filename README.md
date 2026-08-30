@@ -1,4 +1,4 @@
-# ♟️ Grandmaster: Distributed Real-Time Multiplayer Chess Platform
+# ♟️ ChessMate: Distributed Real-Time Multiplayer Chess Platform
 
 A production-grade, server-authoritative multiplayer chess platform engineered with **Node.js, Express.js, Socket.IO, MongoDB, Redis, and FIDE-compliant chess logic**. Built with clean MVC architecture, dynamic room isolation, JWT authentication, server-authoritative clocks with lag compensation, and automated backend test suites.
 

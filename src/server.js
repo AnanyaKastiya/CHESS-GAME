@@ -16,7 +16,7 @@ async function startServer() {
   const { io, roomManager, matchmakingService } = initializeSockets(server);
 
   server.listen(PORT, () => {
-    logger.info(`🚀 ChessLive Server running on port ${PORT} in ${process.env.NODE_ENV || "development"} mode`);
+    logger.info(`🚀 ChessMate Server running on port ${PORT} in ${process.env.NODE_ENV || "development"} mode`);
   });
 
   const shutdown = () => {

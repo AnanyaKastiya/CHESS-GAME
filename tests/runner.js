@@ -38,7 +38,6 @@ async function runAllTests() {
     sockets: { sockets: new Map() },
   };
 
-  // 1. Room Manager Tests
   test("Room creation with default properties", () => {
     const rm = new RoomManager(mockIo);
     const room = rm.createRoom("test_room_1");
@@ -126,7 +125,6 @@ async function runAllTests() {
     assert.strictEqual(mm.getQueueLength(), 0);
   });
 
-  // 2. Auth API Tests via Express app
   const app = require("../src/app");
   const request = require("supertest");
 

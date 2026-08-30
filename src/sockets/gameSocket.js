@@ -4,7 +4,6 @@ function registerGameSocketHandlers(io, roomManager, matchmakingService) {
   io.on("connection", (socket) => {
     logger.info(`New client connected: ${socket.id}`);
 
-    // Join Matchmaking Queue
     socket.on("findMatch", (userData) => {
       try {
         const user = userData || socket.user || {};
@@ -15,7 +14,6 @@ function registerGameSocketHandlers(io, roomManager, matchmakingService) {
       }
     });
 
-    // Cancel Matchmaking
     socket.on("cancelMatchmaking", () => {
       try {
         matchmakingService.removeFromQueue(socket.id);
@@ -25,7 +23,6 @@ function registerGameSocketHandlers(io, roomManager, matchmakingService) {
       }
     });
 
-    // Join Specific Room
     socket.on("joinRoom", ({ roomId, user }) => {
       try {
         if (!roomId) {
@@ -40,7 +37,6 @@ function registerGameSocketHandlers(io, roomManager, matchmakingService) {
       }
     });
 
-    // Handle Move
     socket.on("move", ({ roomId, move }) => {
       try {
         if (!roomId || !move) {
@@ -57,7 +53,6 @@ function registerGameSocketHandlers(io, roomManager, matchmakingService) {
       }
     });
 
-    // Handle Resignation
     socket.on("resign", ({ roomId }) => {
       try {
         if (roomId) {
@@ -68,7 +63,6 @@ function registerGameSocketHandlers(io, roomManager, matchmakingService) {
       }
     });
 
-    // Handle Disconnect
     socket.on("disconnect", () => {
       matchmakingService.removeFromQueue(socket.id);
       roomManager.handleDisconnect(socket.id);

@@ -13,7 +13,6 @@ function initializeSockets(server) {
     },
   });
 
-  // Socket authentication middleware (optional token support for guests and logged-in users)
   io.use((socket, next) => {
     const token = socket.handshake.auth?.token || socket.handshake.headers?.authorization?.split(" ")[1];
     if (token) {

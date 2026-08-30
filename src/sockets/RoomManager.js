@@ -4,20 +4,20 @@ const logger = require("../utils/logger");
 class RoomManager {
   constructor(io) {
     this.io = io;
-    this.rooms = new Map(); // roomId -> RoomState
-    this.userSocketMap = new Map(); // socketId -> { roomId, role }
-    this.reconnectTimeouts = new Map(); // userId or socketId -> timeout
+    this.rooms = new Map();
+    this.userSocketMap = new Map();
+    this.reconnectTimeouts = new Map();
   }
 
   createRoom(roomId, options = {}) {
-    const timeControl = options.timeControl || { initial: 600, increment: 0 }; // default 10 min
+    const timeControl = options.timeControl || { initial: 600, increment: 0 };
     const room = {
       id: roomId,
       chess: new Chess(),
-      white: null, // { socketId, userId, username, connected: true }
-      black: null, // { socketId, userId, username, connected: true }
-      spectators: [], // [{ socketId, userId, username }]
-      status: "waiting", // 'waiting' | 'active' | 'completed' | 'abandoned'
+      white: null,
+      black: null,
+      spectators: [],
+      status: "waiting",
       timeControl,
       timers: {
         white: timeControl.initial,
@@ -25,8 +25,8 @@ class RoomManager {
         lastMoveTime: null,
       },
       timerInterval: null,
-      drawOffer: null, // 'w' | 'b' | null
-      moves: [], // history of moves: { from, to, promotion, san, fen, timeSpent }
+      drawOffer: null,
+      moves: [],
       winner: null,
       winReason: null,
       createdAt: new Date(),
@@ -48,11 +48,10 @@ class RoomManager {
     }
 
     const userId = user.id || socket.id;
-    const username = user.username || `Guest_${socket.id.substring(0, 5)}`;
+    const username = user.username || `Player_${socket.id.substring(0, 4)}`;
 
     socket.join(`game:${roomId}`);
 
-    // Check if player is reconnecting
     if (room.white && room.white.userId === userId) {
       room.white.socketId = socket.id;
       room.white.connected = true;
@@ -75,7 +74,6 @@ class RoomManager {
 
     let role = "spectator";
 
-    // Assign open player slots
     if (!room.white) {
       room.white = { socketId: socket.id, userId, username, connected: true };
       role = "w";
@@ -89,7 +87,6 @@ class RoomManager {
     this.userSocketMap.set(socket.id, { roomId, role, userId });
     logger.info(`User ${username} joined ${roomId} as ${role}`);
 
-    // If both players present, start game
     if (room.white && room.black && room.status === "waiting") {
       room.status = "active";
       room.timers.lastMoveTime = Date.now();
@@ -106,7 +103,7 @@ class RoomManager {
     if (!room) return { success: false, error: "Room not found" };
     if (room.status !== "active") return { success: false, error: "Game is not active" };
 
-    const currentTurn = room.chess.turn(); // 'w' or 'b'
+    const currentTurn = room.chess.turn();
     const playerRole = currentTurn === "w" ? room.white : room.black;
 
     if (!playerRole || playerRole.socketId !== socketId) {
@@ -119,13 +116,11 @@ class RoomManager {
         ? (now - room.timers.lastMoveTime) / 1000
         : 0;
 
-      // Apply server move validation using chess.js
       const moveResult = room.chess.move(moveData);
       if (!moveResult) {
         return { success: false, error: "Illegal move" };
       }
 
-      // Update timers with increment
       if (currentTurn === "w") {
         room.timers.white = Math.max(0, room.timers.white - elapsedSeconds + room.timeControl.increment);
       } else {
@@ -133,7 +128,6 @@ class RoomManager {
       }
       room.timers.lastMoveTime = now;
 
-      // Record move
       room.moves.push({
         from: moveResult.from,
         to: moveResult.to,
@@ -144,10 +138,8 @@ class RoomManager {
         timestamp: new Date(),
       });
 
-      // Clear any pending draw offer on move
       room.drawOffer = null;
 
-      // Check game conclusion
       if (room.chess.isGameOver()) {
         this.endGame(roomId, this.resolveGameOverReason(room.chess));
       }
@@ -257,7 +249,7 @@ class RoomManager {
   }
 
   scheduleReconnectTimeout(roomId, userId, role) {
-    const GRACE_PERIOD_MS = 30000; // 30 seconds
+    const GRACE_PERIOD_MS = 30000;
     const timeout = setTimeout(() => {
       const room = this.getRoom(roomId);
       if (!room || room.status !== "active") return;

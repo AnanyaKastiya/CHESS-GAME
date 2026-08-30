@@ -2,8 +2,6 @@ const Game = require("../models/Game");
 const User = require("../models/User");
 const { getDBStatus } = require("../config/db");
 
-// @desc    Get user's game history
-// @route   GET /api/games/history
 const getGameHistory = async (req, res, next) => {
   try {
     if (getDBStatus()) {
@@ -24,8 +22,6 @@ const getGameHistory = async (req, res, next) => {
   }
 };
 
-// @desc    Get game details by ID
-// @route   GET /api/games/:id
 const getGameById = async (req, res, next) => {
   try {
     if (getDBStatus()) {
@@ -46,8 +42,6 @@ const getGameById = async (req, res, next) => {
   }
 };
 
-// @desc    Get Top Players Leaderboard
-// @route   GET /api/games/leaderboard
 const getLeaderboard = async (req, res, next) => {
   try {
     if (getDBStatus()) {
@@ -61,9 +55,9 @@ const getLeaderboard = async (req, res, next) => {
       return res.json({
         success: true,
         data: [
-          { username: "GrandMaster_Dev", rating: 2100, gamesPlayed: 45, gamesWon: 40 },
-          { username: "ChessWizard", rating: 1950, gamesPlayed: 32, gamesWon: 24 },
-          { username: "TacticsKing", rating: 1820, gamesPlayed: 28, gamesWon: 19 },
+          { username: "ChessMaster_Pro", rating: 2150, gamesPlayed: 52, gamesWon: 45 },
+          { username: "TacticsWizard", rating: 1980, gamesPlayed: 38, gamesWon: 29 },
+          { username: "EndgameKing", rating: 1840, gamesPlayed: 31, gamesWon: 22 },
         ],
       });
     }

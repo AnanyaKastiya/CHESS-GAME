@@ -1,7 +1,6 @@
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 const { getDBStatus } = require("../config/db");
-const logger = require("../utils/logger");
 
 const generateToken = (id, username, email, rating = 1200) => {
   return jwt.sign(
@@ -11,11 +10,8 @@ const generateToken = (id, username, email, rating = 1200) => {
   );
 };
 
-// In-memory fallback if DB is not connected
 const inMemoryUsers = new Map();
 
-// @desc    Register a new user
-// @route   POST /api/auth/register
 const registerUser = async (req, res, next) => {
   try {
     const { username, email, password } = req.body;
@@ -42,7 +38,6 @@ const registerUser = async (req, res, next) => {
         token: generateToken(user._id, user.username, user.email, user.rating),
       });
     } else {
-      // In-memory fallback
       if (inMemoryUsers.has(username) || inMemoryUsers.has(email)) {
         return res.status(400).json({ success: false, message: "User already exists (in-memory mode)" });
       }
@@ -67,8 +62,6 @@ const registerUser = async (req, res, next) => {
   }
 };
 
-// @desc    Authenticate user & get token
-// @route   POST /api/auth/login
 const loginUser = async (req, res, next) => {
   try {
     const { emailOrUsername, password } = req.body;
@@ -97,7 +90,6 @@ const loginUser = async (req, res, next) => {
         return res.status(401).json({ success: false, message: "Invalid credentials" });
       }
     } else {
-      // In-memory fallback
       const user = inMemoryUsers.get(emailOrUsername);
       if (user && user.password === password) {
         return res.json({
@@ -119,8 +111,6 @@ const loginUser = async (req, res, next) => {
   }
 };
 
-// @desc    Get user profile
-// @route   GET /api/auth/me
 const getUserProfile = async (req, res, next) => {
   try {
     res.json({

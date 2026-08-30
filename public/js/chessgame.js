@@ -1,4 +1,3 @@
-// Client-side Chess Game Logic & Real-Time Sync
 const socket = io({
   auth: {
     token: localStorage.getItem("token") || null,
@@ -8,16 +7,14 @@ const socket = io({
 const chess = new Chess();
 const boardElement = document.querySelector(".chessboard");
 
-// State Variables
 let currentRoomId = getInitialRoomId();
-let playerRole = null; // 'w' | 'b' | 'spectator'
+let playerRole = null;
 let selectedSquare = null;
 let pendingPromotionMove = null;
 let currentGameState = null;
 let clockInterval = null;
 let currentUser = null;
 
-// Initialize on DOM Ready
 document.addEventListener("DOMContentLoaded", () => {
   setupEventListeners();
   checkAuthStatus();
@@ -39,14 +36,10 @@ function joinCurrentRoom() {
   socket.emit("joinRoom", { roomId: currentRoomId, user: currentUser });
 }
 
-// -------------------------------------------------------------
-// Board Rendering & Move Interaction
-// -------------------------------------------------------------
 function renderBoard() {
   const board = chess.board();
   boardElement.innerHTML = "";
 
-  // Highlight check
   let checkSquare = null;
   if (chess.in_check()) {
     const turn = chess.turn();
@@ -72,17 +65,14 @@ function renderBoard() {
       const algebraicPos = getAlgebraic(rowIndex, colIndex);
       squareElement.dataset.pos = algebraicPos;
 
-      // Check highlight
       if (checkSquare && checkSquare.r === rowIndex && checkSquare.c === colIndex) {
         squareElement.classList.add("in-check");
       }
 
-      // Selected square indicator
       if (selectedSquare && selectedSquare.row === rowIndex && selectedSquare.col === colIndex) {
         squareElement.classList.add("highlight-last");
       }
 
-      // Render Piece
       if (square) {
         const pieceElement = document.createElement("div");
         pieceElement.classList.add(
@@ -95,7 +85,6 @@ function renderBoard() {
         pieceElement.draggable = isMovable;
         if (isMovable) pieceElement.classList.add("draggable");
 
-        // Drag events
         pieceElement.addEventListener("dragstart", (e) => {
           if (!isMovable) return e.preventDefault();
           selectedSquare = { row: rowIndex, col: colIndex };
@@ -106,12 +95,10 @@ function renderBoard() {
         squareElement.appendChild(pieceElement);
       }
 
-      // Click to Move Support
       squareElement.addEventListener("click", () => {
         handleSquareClick(rowIndex, colIndex, algebraicPos);
       });
 
-      // Drop handlers
       squareElement.addEventListener("dragover", (e) => e.preventDefault());
       squareElement.addEventListener("drop", (e) => {
         e.preventDefault();
@@ -124,7 +111,6 @@ function renderBoard() {
     });
   });
 
-  // Flip board for Black player
   if (playerRole === "b") {
     boardElement.classList.add("flipped");
   } else {
@@ -138,7 +124,6 @@ function handleSquareClick(row, col, algebraicPos) {
   const clickedPiece = chess.get(algebraicPos);
 
   if (selectedSquare) {
-    // If clicking own other piece, change selection
     if (clickedPiece && clickedPiece.color === playerRole) {
       selectedSquare = { row, col };
       renderBoard();
@@ -146,7 +131,6 @@ function handleSquareClick(row, col, algebraicPos) {
       return;
     }
 
-    // Attempt Move
     attemptMove(selectedSquare, { row, col });
     selectedSquare = null;
     clearHighlights();
@@ -176,7 +160,6 @@ function attemptMove(source, target) {
   const from = getAlgebraic(source.row, source.col);
   const to = getAlgebraic(target.row, target.col);
 
-  // Check if move is a pawn promotion
   const piece = chess.get(from);
   const isPromotion =
     piece &&
@@ -212,9 +195,6 @@ function getPieceUnicode(piece) {
   return unicodeMap[piece.type] || "";
 }
 
-// -------------------------------------------------------------
-// Real-Time Socket.IO Listeners
-// -------------------------------------------------------------
 socket.on("connect", () => {
   document.getElementById("connectionText").innerText = "Connected";
   document.getElementById("connectionBadge").querySelector("span").className = "w-2 h-2 rounded-full bg-emerald-500";
@@ -236,16 +216,10 @@ socket.on("roomState", (state) => {
   currentGameState = state;
   chess.load(state.fen);
 
-  // Update Players & Connection Status
   updatePlayerHeader(state);
-
-  // Update Move History
   updateMoveHistory(state.moves);
-
-  // Update Timers
   syncTimers(state.timers, state.turn, state.status);
 
-  // Check Game Over
   if (state.status === "completed" || state.gameOver) {
     showGameOverBanner(state.winner, state.winReason);
   } else {
@@ -270,9 +244,6 @@ socket.on("invalidMove", (data) => {
   renderBoard();
 });
 
-// -------------------------------------------------------------
-// Header & UI Updates
-// -------------------------------------------------------------
 function updatePlayerHeader(state) {
   const whiteName = state.white ? state.white.username : "Waiting for White...";
   const blackName = state.black ? state.black.username : "Waiting for Black...";
@@ -283,7 +254,6 @@ function updatePlayerHeader(state) {
 
   document.getElementById("bottomPlayerName").innerText = bottomName;
   document.getElementById("topPlayerName").innerText = topName;
-
   document.getElementById("spectatorsCount").innerText = state.spectatorsCount || 0;
 
   const turnText = state.turn === "w" ? "White's turn" : "Black's turn";
@@ -372,11 +342,7 @@ function showGameOverBanner(winner, reason) {
   }
 }
 
-// -------------------------------------------------------------
-// UI Event Handlers & Matchmaking
-// -------------------------------------------------------------
 function setupEventListeners() {
-  // Matchmaking
   const findMatchBtn = document.getElementById("findMatchBtn");
   const cancelQueueBtn = document.getElementById("cancelQueueBtn");
 
@@ -392,7 +358,6 @@ function setupEventListeners() {
     findMatchBtn.classList.remove("hidden");
   });
 
-  // Create / Join Custom Room
   document.getElementById("createRoomBtn").addEventListener("click", () => {
     const randomCode = `room_${Math.random().toString(36).substring(2, 8)}`;
     window.location.href = `/game/${randomCode}`;
@@ -405,7 +370,6 @@ function setupEventListeners() {
     }
   });
 
-  // Resign & Actions
   document.getElementById("resignBtn").addEventListener("click", () => {
     if (confirm("Are you sure you want to resign this match?")) {
       socket.emit("resign", { roomId: currentRoomId });
@@ -422,7 +386,6 @@ function setupEventListeners() {
     document.getElementById("findMatchBtn").click();
   });
 
-  // Pawn Promotion choices
   document.querySelectorAll(".promotion-choice").forEach((btn) => {
     btn.addEventListener("click", (e) => {
       const pieceType = e.target.dataset.piece;
@@ -438,7 +401,6 @@ function setupEventListeners() {
     });
   });
 
-  // Tab Switching
   const tabMovesBtn = document.getElementById("tabMovesBtn");
   const tabLeaderboardBtn = document.getElementById("tabLeaderboardBtn");
   const tabMoves = document.getElementById("tabMoves");
@@ -459,13 +421,9 @@ function setupEventListeners() {
     fetchLeaderboard();
   });
 
-  // Auth Modal
   setupAuthModal();
 }
 
-// -------------------------------------------------------------
-// Auth & API Interactions
-// -------------------------------------------------------------
 function setupAuthModal() {
   const authModal = document.getElementById("authModal");
   const authModalBtn = document.getElementById("authModalBtn");
@@ -481,7 +439,6 @@ function setupAuthModal() {
 
   authModalBtn.addEventListener("click", () => {
     if (currentUser) {
-      // Logout
       localStorage.removeItem("token");
       currentUser = null;
       document.getElementById("userDisplayName").innerText = "Sign In";

@@ -9,7 +9,6 @@ const logger = require("./utils/logger");
 const PORT = process.env.PORT || 3000;
 
 async function startServer() {
-  // Connect to Database and Cache
   await connectDB();
   initRedis();
 
@@ -17,10 +16,9 @@ async function startServer() {
   const { io, roomManager, matchmakingService } = initializeSockets(server);
 
   server.listen(PORT, () => {
-    logger.info(`🚀 Chess Multiplayer Server running on port ${PORT} in ${process.env.NODE_ENV || "development"} mode`);
+    logger.info(`🚀 ChessLive Server running on port ${PORT} in ${process.env.NODE_ENV || "development"} mode`);
   });
 
-  // Graceful Shutdown
   const shutdown = () => {
     logger.info("Gracefully shutting down server...");
     server.close(() => {

@@ -5,38 +5,6 @@ A production-grade, server-authoritative multiplayer chess platform engineered w
 
 ---
 
-## 🏗️ System Architecture
-
-```
-                               ┌─────────────────────────┐
-                               │   Web Client (Browser)  │
-                               │   EJS + Tailwind + JS   │
-                               └────────────┬────────────┘
-                                            │
-                             HTTP REST / WebSocket (Socket.IO)
-                                            │
-                               ┌────────────▼────────────┐
-                               │   Express / Socket.IO   │
-                               │   Application Server    │
-                               └────────────┬────────────┘
-                                            │
-           ┌────────────────────────────────┼────────────────────────────────┐
-           │                                │                                │
-           ▼                                ▼                                ▼
-  ┌──────────────────┐            ┌──────────────────┐            ┌──────────────────┐
-  │  Authentication  │            │   Room Manager   │            │   Matchmaking    │
-  │  (JWT + Bcrypt)  │            │  (Game State WS) │            │  Service (Queue) │
-  └────────┬─────────┘            └────────┬─────────┘            └────────┬─────────┘
-           │                               │                               │
-           ▼                               ▼                               ▼
-  ┌──────────────────┐            ┌──────────────────┐            ┌──────────────────┐
-  │ MongoDB Database │            │ FIDE Move Engine │            │   Redis Cache    │
-  │ (Users & Matches)│            │  (Chess.js Core) │            │ (Queues & State) │
-  └──────────────────┘            └──────────────────┘            └──────────────────┘
-```
-
----
-
 ## 🚀 Key Engineering Highlights
 
 1. **Server-Authoritative Game State & Anti-Cheat:**
@@ -54,50 +22,6 @@ A production-grade, server-authoritative multiplayer chess platform engineered w
    - Mathematical rating updates calculated dynamically upon match conclusion and persisted to MongoDB leaderboards.
 6. **JWT Authentication & Role-Based Access Control:**
    - Secure password hashing with `bcryptjs` and stateless JWT verification for both REST routes and WebSocket connection upgrades.
-
----
-
-## 📂 Project Structure
-
-```
-├── src/
-│   ├── config/             # Database (MongoDB) & Redis cache setup
-│   │   ├── db.js
-│   │   └── redis.js
-│   ├── controllers/        # REST route controllers (Auth, Games, Leaderboard)
-│   │   ├── authController.js
-│   │   └── gameController.js
-│   ├── middleware/         # JWT auth protection & global error handlers
-│   │   ├── authMiddleware.js
-│   │   └── errorMiddleware.js
-│   ├── models/             # Mongoose schemas (User, Game)
-│   │   ├── Game.js
-│   │   └── User.js
-│   ├── routes/             # Express API routes
-│   │   ├── authRoutes.js
-│   │   └── gameRoutes.js
-│   ├── services/           # Matchmaking & Game domain logic
-│   │   └── matchmakingService.js
-│   ├── sockets/            # Socket.IO handlers & multi-room state manager
-│   │   ├── RoomManager.js
-│   │   ├── gameSocket.js
-│   │   └── index.js
-│   ├── utils/              # ELO formulas & Winston logger
-│   │   ├── elo.js
-│   │   └── logger.js
-│   ├── app.js              # Express app configuration & middleware
-│   └── server.js           # Server entrypoint & graceful shutdown
-├── tests/                  # Automated integration & unit test suites
-│   ├── auth.test.js
-│   └── game.test.js
-├── public/                 # Static assets & interactive client chess scripts
-│   └── js/chessgame.js
-├── views/                  # Modern responsive EJS templates
-│   └── index.ejs
-├── Dockerfile              # Production Docker image definition
-├── docker-compose.yml      # Multi-container setup (App + MongoDB + Redis)
-└── package.json
-```
 
 ---
 
@@ -125,53 +49,5 @@ A production-grade, server-authoritative multiplayer chess platform engineered w
 
 ---
 
-## 🧪 Testing
-
-Run the automated test suite covering authentication, move validation, turn order enforcement, and ELO calculations:
-
-```bash
-npm test
-```
-
----
-
-## 🐳 Quickstart with Docker Compose
-
-To spin up the entire distributed stack (**App + MongoDB + Redis**) with a single command:
-
-```bash
-docker-compose up --build
-```
-Access the application at `http://localhost:3000`.
-
----
-
-## 💻 Local Development Setup
-
-1. **Clone repository and install dependencies:**
-   ```bash
-   git clone https://github.com/AnanyaKastiya/CHESS-GAME.git
-   cd CHESS-GAME
-   npm install
-   ```
-
-2. **Configure Environment Variables:**
-   Create a `.env` file in the root directory:
-   ```env
-   PORT=3000
-   NODE_ENV=development
-   JWT_SECRET=super_secret_chess_jwt_key_2026_placement
-   MONGO_URI=mongodb://127.0.0.1:27017/chess_game_db
-   REDIS_URL=redis://127.0.0.1:6379
-   LOG_LEVEL=info
-   ```
-
-3. **Start Development Server:**
-   ```bash
-   npm run dev
-   ```
-
----
-
-## 📄 License
-ISC © Ananya Kastiya
+## Author
+Ananya Kastiya

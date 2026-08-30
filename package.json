@@ -2,20 +2,35 @@
   "name": "chess.com-clone",
   "version": "1.0.0",
   "description": "",
-  "main": "app.js",
+  "main": "src/server.js",
   "scripts": {
-    "start": "node app.js"
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js",
+    "test": "node tests/runner.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "bcryptjs": "^3.0.3",
     "chess.js": "^1.4.0",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
     "ejs": "^3.1.10",
     "express": "^4.22.1",
-    "socket.io": "^4.8.3"
+    "express-rate-limit": "^8.7.0",
+    "helmet": "^8.3.0",
+    "ioredis": "^6.0.0",
+    "jsonwebtoken": "^9.0.3",
+    "mongoose": "^9.9.4",
+    "socket.io": "^4.8.3",
+    "uuid": "^14.0.2",
+    "winston": "^3.19.0"
   },
   "devDependencies": {
+    "jest": "^30.5.0",
+    "nodemon": "^3.1.14",
+    "supertest": "^7.2.2",
     "tailwindcss": "^3.4.4"
   }
 }

@@ -5,6 +5,8 @@ const MatchmakingService = require("../services/matchmakingService");
 const registerGameSocketHandlers = require("./gameSocket");
 const logger = require("../utils/logger");
 
+const { addOrUpdateInMemoryUser } = require("../controllers/authController");
+
 function initializeSockets(server) {
   const io = socketIo(server, {
     cors: {
@@ -19,6 +21,7 @@ function initializeSockets(server) {
       try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET || "chess_jwt_secret_dev_key");
         socket.user = decoded;
+        addOrUpdateInMemoryUser(decoded);
       } catch (err) {
         logger.warn(`Invalid socket token: ${err.message}`);
       }

@@ -111,8 +111,28 @@ const loginUser = async (req, res, next) => {
   }
 };
 
+const addOrUpdateInMemoryUser = (user) => {
+  if (!user || !user.username) return;
+  const id = user._id || user.id || `user_${user.username}`;
+  const existing = inMemoryUsers.get(user.username) || {};
+  const updated = {
+    id,
+    username: user.username,
+    email: user.email || `${user.username}@local.dev`,
+    rating: user.rating || existing.rating || 1200,
+    gamesPlayed: user.gamesPlayed || existing.gamesPlayed || 0,
+    gamesWon: user.gamesWon || existing.gamesWon || 0,
+  };
+  inMemoryUsers.set(user.username, updated);
+  if (user.email) inMemoryUsers.set(user.email, updated);
+  return updated;
+};
+
 const getUserProfile = async (req, res, next) => {
   try {
+    if (req.user) {
+      addOrUpdateInMemoryUser(req.user);
+    }
     res.json({
       success: true,
       user: req.user,
@@ -139,4 +159,4 @@ const getUniqueInMemoryUsers = () => {
   return unique.sort((a, b) => (b.rating || 1200) - (a.rating || 1200));
 };
 
-module.exports = { registerUser, loginUser, getUserProfile, getUniqueInMemoryUsers };
+module.exports = { registerUser, loginUser, getUserProfile, getUniqueInMemoryUsers, addOrUpdateInMemoryUser };

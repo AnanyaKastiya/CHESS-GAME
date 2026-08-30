@@ -56,12 +56,12 @@ const getLeaderboard = async (req, res, next) => {
     } else {
       const memoryUsers = getUniqueInMemoryUsers();
       const demoUsers = [
-        { username: "ChessMaster_Pro", rating: 1500, gamesPlayed: 12, gamesWon: 10 },
-        { username: "TacticsWizard", rating: 1420, gamesPlayed: 8, gamesWon: 5 },
-        { username: "EndgameKing", rating: 1350, gamesPlayed: 6, gamesWon: 4 },
+        { username: "Grandmaster_Bot", rating: 1180, gamesPlayed: 12, gamesWon: 8 },
+        { username: "TacticsWizard", rating: 1150, gamesPlayed: 8, gamesWon: 5 },
+        { username: "EndgameKing", rating: 1100, gamesPlayed: 6, gamesWon: 4 },
       ];
 
-      // Combine real registered users with demo rankings
+      // Real registered users rank first
       const combined = [...memoryUsers, ...demoUsers]
         .filter((u, index, self) => index === self.findIndex((t) => t.username === u.username))
         .sort((a, b) => b.rating - a.rating)

@@ -532,20 +532,21 @@ async function fetchLeaderboard() {
 
     if (data.success && data.data.length > 0) {
       list.innerHTML = data.data
-        .map(
-          (u, idx) => `
-          <div class="flex items-center justify-between p-2.5 bg-zinc-800/40 rounded-lg border border-zinc-800 text-xs">
+        .map((u, idx) => {
+          const isMe = currentUser && currentUser.username === u.username;
+          return `
+          <div class="flex items-center justify-between p-2.5 ${isMe ? "bg-emerald-950/40 border-emerald-600/50" : "bg-zinc-800/40 border-zinc-800"} rounded-lg border text-xs">
             <div class="flex items-center gap-2.5">
-              <span class="font-bold text-zinc-500 w-4">${idx + 1}.</span>
-              <span class="font-semibold text-zinc-200">${u.username}</span>
+              <span class="font-bold ${idx === 0 ? "text-yellow-400" : "text-zinc-500"} w-4">${idx + 1}.</span>
+              <span class="font-semibold ${isMe ? "text-emerald-400" : "text-zinc-200"}">${u.username} ${isMe ? '<span class="text-[10px] px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-normal ml-1">You</span>' : ""}</span>
             </div>
             <div class="flex items-center gap-2">
-              <span class="text-emerald-400 font-bold">${u.rating}</span>
+              <span class="text-emerald-400 font-bold">${u.rating || 1200}</span>
               <span class="text-zinc-500">ELO</span>
             </div>
           </div>
-        `
-        )
+        `;
+        })
         .join("");
     }
   } catch (err) {

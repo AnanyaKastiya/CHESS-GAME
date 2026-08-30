@@ -122,4 +122,21 @@ const getUserProfile = async (req, res, next) => {
   }
 };
 
-module.exports = { registerUser, loginUser, getUserProfile };
+const getUniqueInMemoryUsers = () => {
+  const unique = [];
+  const seenIds = new Set();
+  for (const user of inMemoryUsers.values()) {
+    if (!seenIds.has(user.id)) {
+      seenIds.add(user.id);
+      unique.push({
+        username: user.username,
+        rating: user.rating || 1200,
+        gamesPlayed: user.gamesPlayed || 0,
+        gamesWon: user.gamesWon || 0,
+      });
+    }
+  }
+  return unique.sort((a, b) => (b.rating || 1200) - (a.rating || 1200));
+};
+
+module.exports = { registerUser, loginUser, getUserProfile, getUniqueInMemoryUsers };

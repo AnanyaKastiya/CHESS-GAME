@@ -42,6 +42,8 @@ const getGameById = async (req, res, next) => {
   }
 };
 
+const { getUniqueInMemoryUsers } = require("./authController");
+
 const getLeaderboard = async (req, res, next) => {
   try {
     if (getDBStatus()) {
@@ -52,14 +54,20 @@ const getLeaderboard = async (req, res, next) => {
 
       return res.json({ success: true, data: topPlayers });
     } else {
-      return res.json({
-        success: true,
-        data: [
-          { username: "ChessMaster_Pro", rating: 2150, gamesPlayed: 52, gamesWon: 45 },
-          { username: "TacticsWizard", rating: 1980, gamesPlayed: 38, gamesWon: 29 },
-          { username: "EndgameKing", rating: 1840, gamesPlayed: 31, gamesWon: 22 },
-        ],
-      });
+      const memoryUsers = getUniqueInMemoryUsers();
+      const demoUsers = [
+        { username: "ChessMaster_Pro", rating: 1500, gamesPlayed: 12, gamesWon: 10 },
+        { username: "TacticsWizard", rating: 1420, gamesPlayed: 8, gamesWon: 5 },
+        { username: "EndgameKing", rating: 1350, gamesPlayed: 6, gamesWon: 4 },
+      ];
+
+      // Combine real registered users with demo rankings
+      const combined = [...memoryUsers, ...demoUsers]
+        .filter((u, index, self) => index === self.findIndex((t) => t.username === u.username))
+        .sort((a, b) => b.rating - a.rating)
+        .slice(0, 10);
+
+      return res.json({ success: true, data: combined });
     }
   } catch (error) {
     next(error);

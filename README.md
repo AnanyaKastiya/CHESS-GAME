@@ -1,4 +1,7 @@
 # ♟️ ChessMate: Distributed Real-Time Multiplayer Chess Platform
+[![Live Demo](https://img.shields.io/badge/Live_Demo-Render-10b981?style=for-the-badge&logo=render&logoColor=white)](https://chess-game-608k.onrender.com)
+...
+> 🔗 **Live URL:** [https://chess-game-608k.onrender.com](https://chess-game-608k.onrender.com)
 
 A production-grade, server-authoritative multiplayer chess platform engineered with **Node.js, Express.js, Socket.IO, MongoDB, Redis, and FIDE-compliant chess logic**. Built with clean MVC architecture, dynamic room isolation, JWT authentication, server-authoritative clocks with lag compensation, and automated backend test suites.
 
